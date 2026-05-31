@@ -80,6 +80,10 @@ UPDATE_PACKAGE "timecontrol" "sirpdboy/luci-app-timecontrol" "main"
 UPDATE_PACKAGE "viking" "VIKINGYFY/packages" "main" "" "luci-app-timewol luci-app-wolplus"
 UPDATE_PACKAGE "vnt" "lmq8267/luci-app-vnt" "main"
 UPDATE_PACKAGE "luci-app-store" "linkease/istore" "main" "pkg"
+# 修复 luci-app-store 在 apk 环境下的版本号非法报错 (0.1.32-1 中带有连字符被 apk 判定为非法)
+if [ -f "./luci-app-store/Makefile" ]; then
+	sed -i 's/PKG_VERSION:=0.1.32-1/PKG_VERSION:=0.1.32.1/g' ./luci-app-store/Makefile
+fi
 UPDATE_PACKAGE "luci-app-easymesh" "ntlf9t/luci-app-easymesh" "master"
 
 #更新软件包版本
