@@ -4,7 +4,7 @@ set -e
 # Setup environment variables matching the CI workflow
 export GITHUB_WORKSPACE="/home/z582601898/workspace/OpenWRT-CI"
 export WRT_CONFIG="IPQ60XX-WIFI-YES"
-export WRT_THEME="aurora"
+export WRT_THEME="argon"
 export WRT_NAME="OWRT"
 export WRT_SSID="OWRT"
 export WRT_WORD="12345678"
