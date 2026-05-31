@@ -33,10 +33,13 @@ find ./Scripts/ -type f -name "*.sh" -exec dos2unix {} \; -exec chmod +x {} \;
 
 # 3. Update and Install Feeds
 cd wrt
-echo "-> Updating feeds..."
-./scripts/feeds update -a
-echo "-> Installing feeds..."
-./scripts/feeds install -a
+if [ ! -d "feeds" ] || [ ! -d "package/feeds" ] || [ "$FORCE_FEEDS" = "true" ]; then
+    echo "-> Updating and installing feeds..."
+    ./scripts/feeds update -a
+    ./scripts/feeds install -a
+else
+    echo "-> Feeds already installed. Skipping update and install to preserve host tools cache (LLVM/Rust/Go)."
+fi
 
 # 4. Custom Packages
 echo "-> Running package customization..."
