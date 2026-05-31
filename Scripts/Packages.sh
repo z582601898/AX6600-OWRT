@@ -93,6 +93,7 @@ for name in luci-app-store luci-lib-taskd luci-lib-xterm taskd; do
 		done <<< "$FOUND_DIRS"
 	fi
 	# 复制组件到 package 目录
+	rm -rf ./$name
 	cp -rf ./istore/luci/$name ./
 done
 rm -rf ./istore
