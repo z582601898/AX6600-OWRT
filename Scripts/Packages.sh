@@ -79,7 +79,24 @@ UPDATE_PACKAGE "quickfile" "sbwml/luci-app-quickfile" "main"
 UPDATE_PACKAGE "timecontrol" "sirpdboy/luci-app-timecontrol" "main"
 UPDATE_PACKAGE "viking" "VIKINGYFY/packages" "main" "" "luci-app-timewol luci-app-wolplus"
 UPDATE_PACKAGE "vnt" "lmq8267/luci-app-vnt" "main"
-UPDATE_PACKAGE "luci-app-store" "linkease/istore" "main" "pkg"
+# iStore 商店及其依赖包 (luci-lib-taskd, luci-lib-xterm, taskd)
+echo "Cloning linkease/istore repository..."
+git clone --depth=1 --single-branch --branch main https://github.com/linkease/istore.git
+for name in luci-app-store luci-lib-taskd luci-lib-xterm taskd; do
+	# 删除 feeds 中可能存在的重名组件，防止冲突
+	echo "Search directory in feeds: $name"
+	FOUND_DIRS=$(find ../feeds/luci/ ../feeds/packages/ -maxdepth 3 -type d -iname "*$name*" 2>/dev/null)
+	if [ -n "$FOUND_DIRS" ]; then
+		while read -r DIR; do
+			rm -rf "$DIR"
+			echo "Delete directory: $DIR"
+		done <<< "$FOUND_DIRS"
+	fi
+	# 复制组件到 package 目录
+	cp -rf ./istore/luci/$name ./
+done
+rm -rf ./istore
+
 # 修复 luci-app-store 在 apk 环境下的版本号非法报错 (0.1.32-1 中带有连字符被 apk 判定为非法)
 if [ -f "./luci-app-store/Makefile" ]; then
 	sed -i 's/PKG_VERSION:=0.1.32-1/PKG_VERSION:=0.1.32.1/g' ./luci-app-store/Makefile
