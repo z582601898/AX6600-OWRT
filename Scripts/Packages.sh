@@ -102,6 +102,26 @@ rm -rf ./istore
 if [ -f "./luci-app-store/Makefile" ]; then
 	sed -i 's/PKG_VERSION:=0.1.32-1/PKG_VERSION:=0.1.32.1/g' ./luci-app-store/Makefile
 fi
+
+# 克隆 SSR-Plus 及其特有依赖 (luci-app-ssr-plus, shadowsocksr-libev, dns2socks)
+echo "Cloning fw876/helloworld repository..."
+git clone --depth=1 --single-branch --branch master https://github.com/fw876/helloworld.git
+for name in luci-app-ssr-plus shadowsocksr-libev dns2socks; do
+	# 删除 feeds 中可能存在的重名组件，防止冲突
+	echo "Search directory in feeds: $name"
+	FOUND_DIRS=$(find ../feeds/luci/ ../feeds/packages/ -maxdepth 3 -type d -iname "*$name*" 2>/dev/null)
+	if [ -n "$FOUND_DIRS" ]; then
+		while read -r DIR; do
+			rm -rf "$DIR"
+			echo "Delete directory: $DIR"
+		done <<< "$FOUND_DIRS"
+	fi
+	# 复制组件到 package 目录
+	rm -rf ./$name
+	cp -rf ./helloworld/$name ./
+done
+rm -rf ./helloworld
+
 UPDATE_PACKAGE "luci-app-easymesh" "ntlf9t/luci-app-easymesh" "master"
 
 #更新软件包版本

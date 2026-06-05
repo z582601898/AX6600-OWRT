@@ -139,6 +139,7 @@ CONFIG_PACKAGE_luci-app-passwall_Iptables_Transparent_Proxy=y
 CONFIG_PACKAGE_luci-app-passwall_Nftables_Transparent_Proxy=y
 CONFIG_PACKAGE_luci-app-passwall_Xray=y
 CONFIG_PACKAGE_luci-app-passwall_Sing-Box=y
+CONFIG_PACKAGE_luci-app-ssr-plus=y
 
 # AP Mesh Roaming Helpers
 CONFIG_PACKAGE_luci-app-dawn=y
