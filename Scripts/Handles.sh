@@ -154,12 +154,14 @@ if [ -f "$BOOST_VERSION_MK" ]; then
 	sed -i 's|BOOST_MAKEFILE := .*|BOOST_MAKEFILE := \$(TOPDIR)/feeds/packages/libs/boost/Makefile|g' "$BOOST_VERSION_MK"
 fi
 
-# 修复 pdnsd-alt 下载 Hash 校验失败的问题
+# 修复 pdnsd-alt 下载 Hash 校验失败及 APK 版本格式非法的问题
 PDNSD_ALT_MAKEFILE="./pdnsd-alt/Makefile"
 if [ -f "$PDNSD_ALT_MAKEFILE" ]; then
-	echo "Fixing pdnsd-alt Makefile mirror hash..."
+	echo "Fixing pdnsd-alt Makefile mirror hash and version..."
 	sed -i 's/PKG_MIRROR_HASH:=.*/PKG_MIRROR_HASH:=skip/g' "$PDNSD_ALT_MAKEFILE"
+	sed -i 's/PKG_VERSION:=1.2.9b-par/PKG_VERSION:=1.2.9b.par/g' "$PDNSD_ALT_MAKEFILE"
 fi
+
 
 
 
