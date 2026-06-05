@@ -30,6 +30,10 @@ UPDATE_PACKAGE() {
 		fi
 	done
 
+	# 删除本地已存在的克隆目录/同名目录，防止覆盖或冲突报错
+	rm -rf "./$REPO_NAME"
+	rm -rf "./$PKG_NAME"
+
 	# 克隆 GitHub 仓库
 	git clone --depth=1 --single-branch --branch $PKG_BRANCH "https://github.com/$PKG_REPO.git"
 
