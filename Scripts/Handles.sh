@@ -159,8 +159,9 @@ PDNSD_ALT_MAKEFILE="./pdnsd-alt/Makefile"
 if [ -f "$PDNSD_ALT_MAKEFILE" ]; then
 	echo "Fixing pdnsd-alt Makefile mirror hash and version..."
 	sed -i 's/PKG_MIRROR_HASH:=.*/PKG_MIRROR_HASH:=skip/g' "$PDNSD_ALT_MAKEFILE"
-	sed -i 's/PKG_VERSION:=1.2.9b-par/PKG_VERSION:=1.2.9b.par/g' "$PDNSD_ALT_MAKEFILE"
+	sed -i 's/PKG_VERSION:=1.2.9b-par/PKG_VERSION:=1.2.9/g' "$PDNSD_ALT_MAKEFILE"
 fi
+
 
 
 
