@@ -124,6 +124,37 @@ rm -rf ./helloworld
 
 UPDATE_PACKAGE "luci-app-easymesh" "ntlf9t/luci-app-easymesh" "master"
 
+UPDATE_PACKAGE "luci-app-vssr" "QiuSimons/luci-app-vssr-jerrykuku" "master" "name"
+UPDATE_PACKAGE "pdnsd-alt" "coolsnowwolf/packages" "master" "pkg"
+
+# 克隆 Bypass 及其特有依赖 (luci-app-bypass, lua-maxminddb)
+echo "Cloning tianiue/luci-app-bypass repository..."
+git clone --depth=1 --single-branch --branch master https://github.com/tianiue/luci-app-bypass.git ./bypass-repo
+for name in luci-app-bypass lua-maxminddb; do
+	# 删除 feeds 中可能存在的重名组件，防止冲突
+	echo "Search directory in feeds: $name"
+	FOUND_DIRS=$(find ../feeds/luci/ ../feeds/packages/ -maxdepth 3 -type d -iname "*$name*" 2>/dev/null)
+	if [ -n "$FOUND_DIRS" ]; then
+		while read -r DIR; do
+			rm -rf "$DIR"
+			echo "Delete directory: $DIR"
+		done <<< "$FOUND_DIRS"
+	fi
+	# 复制组件 to package 目录
+	rm -rf ./$name
+	cp -rf ./bypass-repo/$name ./
+done
+rm -rf ./bypass-repo
+
+# 集成 Turbo ACC
+echo "Integrating Turbo ACC..."
+cd ..
+rm -rf ./package/turboacc
+curl -sSL https://raw.githubusercontent.com/mufeng05/turboacc/main/add_turboacc.sh -o add_turboacc.sh
+bash add_turboacc.sh
+rm -f add_turboacc.sh
+cd package
+
 #更新软件包版本
 UPDATE_VERSION() {
 	local PKG_NAME=$1
