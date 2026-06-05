@@ -129,6 +129,10 @@ rm -rf ./helloworld
 UPDATE_PACKAGE "luci-app-easymesh" "ntlf9t/luci-app-easymesh" "master"
 
 UPDATE_PACKAGE "luci-app-vssr" "QiuSimons/luci-app-vssr-jerrykuku" "master" "name"
+# 修复 luci-app-vssr 在 apk 环境下的版本号非法报错 (1.22-2 中带有连字符被 apk 判定为非法)
+if [ -f "./luci-app-vssr/Makefile" ]; then
+	sed -i 's/PKG_VERSION:=1.22-2/PKG_VERSION:=1.22.2/g' ./luci-app-vssr/Makefile
+fi
 UPDATE_PACKAGE "pdnsd-alt" "coolsnowwolf/packages" "master" "pkg"
 
 # 克隆 Bypass 及其特有依赖 (luci-app-bypass, lua-maxminddb)
