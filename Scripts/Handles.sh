@@ -99,3 +99,25 @@ if [ -d "luci-app-store" ]; then
 	sed -i 's|libc.control 2>/dev/null | head -1`|libc.control 2>/dev/null | head -1`; [ -z "$ARCH" ] \&\& [ -s "/etc/apk/arch" ] \&\& ARCH=`cat /etc/apk/arch`|' ./luci-app-store/root/bin/is-opkg
 	echo "luci-app-store has been fixed!"
 fi
+
+# 修复 Turbo ACC 与 QCA NSS ECM (0600-1-qca-nss-ecm-support-CORE.patch) 的冲突
+NSS_CORE_PATCH="$GITHUB_WORKSPACE/wrt/target/linux/qualcommax/patches-6.18/0600-1-qca-nss-ecm-support-CORE.patch"
+if [ -f "$NSS_CORE_PATCH" ]; then
+	echo "Fixing 0600-1-qca-nss-ecm-support-CORE.patch conflict with Turbo ACC..."
+	python3 -c "
+patch_path = '$NSS_CORE_PATCH'
+with open(patch_path, 'r') as f:
+    lines = f.readlines()
+for i, line in enumerate(lines):
+    if line.startswith('@@ -278,7 +278,6 @@ void nf_conntrack_register_notifier(stru'):
+        lines[i] = '@@ -373,7 +373,6 @@ int nf_conntrack_register_notifier(struc\n'
+        lines[i+5] = lines[i+5].replace('rcu_assign_pointer(net->ct.nf_conntrack_event_cb, new);', 'if (notify != NULL) {')
+        lines[i+6] = lines[i+6].replace('mutex_unlock(\&nf_ct_ecache_mutex);', '\tret = -EBUSY;')
+        lines[i+7] = lines[i+7].replace('}', '\tgoto out_unlock;')
+        break
+with open(patch_path, 'w') as f:
+    f.writelines(lines)
+"
+	echo "Qualcomm NSS core patch conflict has been fixed!"
+fi
+
