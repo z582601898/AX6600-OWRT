@@ -147,5 +147,13 @@ if [ -f "$MAXMINDDB_MAKEFILE" ]; then
 	sed -i 's/PKG_MIRROR_HASH:=.*/PKG_MIRROR_HASH:=skip/g' "$MAXMINDDB_MAKEFILE"
 fi
 
+# 修复 rblibtorrent 中的 boost-version.mk 导致的 find 慢/挂起问题
+BOOST_VERSION_MK="./luci-app-qbittorrent/rblibtorrent/boost-version.mk"
+if [ -f "$BOOST_VERSION_MK" ]; then
+	echo "Fixing rblibtorrent boost-version.mk..."
+	sed -i 's|BOOST_MAKEFILE := .*|BOOST_MAKEFILE := \$(TOPDIR)/feeds/packages/libs/boost/Makefile|g' "$BOOST_VERSION_MK"
+fi
+
+
 
 
