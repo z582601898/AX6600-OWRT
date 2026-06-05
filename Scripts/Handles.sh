@@ -140,4 +140,12 @@ if start_idx != -1 and end_idx != -1:
 	fi
 done
 
+# 修复 lua-maxminddb 下载 Hash 校验失败的问题
+MAXMINDDB_MAKEFILE="./lua-maxminddb/Makefile"
+if [ -f "$MAXMINDDB_MAKEFILE" ]; then
+	echo "Fixing lua-maxminddb Makefile mirror hash..."
+	sed -i 's/PKG_MIRROR_HASH:=.*/PKG_MIRROR_HASH:=skip/g' "$MAXMINDDB_MAKEFILE"
+fi
+
+
 
