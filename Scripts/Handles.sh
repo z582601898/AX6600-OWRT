@@ -162,6 +162,14 @@ if [ -f "$PDNSD_ALT_MAKEFILE" ]; then
 	sed -i 's/PKG_VERSION:=1.2.9b-par/PKG_VERSION:=1.2.9/g' "$PDNSD_ALT_MAKEFILE"
 fi
 
+# 复制 qca-nss-ecm 兼容 Kernel 6.18+ 的补丁
+ECM_PATCH_DIR="../feeds/nss_packages/qca-nss-ecm/patches"
+if [ -d "$ECM_PATCH_DIR" ]; then
+	echo "Adding kernel 6.18 conntrack notifier patch for qca-nss-ecm..."
+	cp "$GITHUB_WORKSPACE/Scripts/24-fix-conntrack-notifier-for-kernel-6.18.patch" "$ECM_PATCH_DIR/"
+fi
+
+
 
 
 
