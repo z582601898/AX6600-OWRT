@@ -121,3 +121,23 @@ with open(patch_path, 'w') as f:
 	echo "Qualcomm NSS core patch conflict has been fixed!"
 fi
 
+# 修复 Turbo ACC SFE 补丁 (953-net-patch-linux-kernel-to-support-shortcut-fe.patch) 在 NSS 平台下重复定义 br_dev_update_stats 的问题
+for kv in "6.18" "6.12" "6.6"; do
+	SFE_PATCH="$GITHUB_WORKSPACE/wrt/target/linux/generic/hack-$kv/953-net-patch-linux-kernel-to-support-shortcut-fe.patch"
+	if [ -f "$SFE_PATCH" ] && [ -f "$NSS_CORE_PATCH" ]; then
+		echo "Fixing SFE patch $kv to avoid br_dev_update_stats redefinition with NSS..."
+		python3 -c "
+patch_path = '$SFE_PATCH'
+with open(patch_path, 'r') as f:
+    content = f.read()
+start_idx = content.find('--- a/net/bridge/br_if.c')
+end_idx = content.find('--- a/net/core/dev.c')
+if start_idx != -1 and end_idx != -1:
+    new_content = content[:start_idx] + content[end_idx:]
+    with open(patch_path, 'w') as f:
+        f.write(new_content)
+"
+	fi
+done
+
+
