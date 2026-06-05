@@ -107,10 +107,10 @@ if [ -f "./luci-app-store/Makefile" ]; then
 	sed -i 's/PKG_VERSION:=0.1.32-1/PKG_VERSION:=0.1.32.1/g' ./luci-app-store/Makefile
 fi
 
-# 克隆 SSR-Plus 及其特有依赖 (luci-app-ssr-plus, shadowsocksr-libev, dns2socks)
+# 克隆 SSR-Plus 及其特有依赖 (luci-app-ssr-plus, shadowsocksr-libev, shadowsocks-libev, dns2socks)
 echo "Cloning fw876/helloworld repository..."
 git clone --depth=1 --single-branch --branch master https://github.com/fw876/helloworld.git
-for name in luci-app-ssr-plus shadowsocksr-libev dns2socks; do
+for name in luci-app-ssr-plus shadowsocksr-libev shadowsocks-libev dns2socks; do
 	# 删除 feeds 中可能存在的重名组件，防止冲突
 	echo "Search directory in feeds: $name"
 	FOUND_DIRS=$(find ../feeds/luci/ ../feeds/packages/ -maxdepth 3 -type d -iname "*$name*" 2>/dev/null)
