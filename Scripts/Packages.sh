@@ -79,6 +79,7 @@ UPDATE_PACKAGE "quickfile" "sbwml/luci-app-quickfile" "main"
 UPDATE_PACKAGE "timecontrol" "sirpdboy/luci-app-timecontrol" "main"
 UPDATE_PACKAGE "viking" "VIKINGYFY/packages" "main" "" "luci-app-timewol luci-app-wolplus"
 UPDATE_PACKAGE "vnt" "lmq8267/luci-app-vnt" "main"
+UPDATE_PACKAGE "luci-app-onliner" "rufengsuixing/luci-app-onliner" "master" "name"
 # iStore 商店及其依赖包 (luci-lib-taskd, luci-lib-xterm, taskd)
 echo "Cloning linkease/istore repository..."
 git clone --depth=1 --single-branch --branch main https://github.com/linkease/istore.git
@@ -102,6 +103,12 @@ rm -rf ./istore
 if [ -f "./luci-app-store/Makefile" ]; then
 	sed -i 's/PKG_VERSION:=0.1.32-1/PKG_VERSION:=0.1.32.1/g' ./luci-app-store/Makefile
 fi
+
+# 修复 luci-app-store 在 apk 环境下的架构识别失败问题 (libc.control 不存在)
+if [ -f "./luci-app-store/root/bin/is-opkg" ]; then
+	sed -i '/libc.control/s/$/\n[ -z "$ARCH" ] \&\& ARCH=`\. \/etc\/openwrt_release 2\>\/dev\/null \&\& echo "\$DISTRIB_ARCH"`/' ./luci-app-store/root/bin/is-opkg
+fi
+
 UPDATE_PACKAGE "luci-app-easymesh" "ntlf9t/luci-app-easymesh" "master"
 
 #更新软件包版本

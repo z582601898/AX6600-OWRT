@@ -97,3 +97,11 @@ if [ -f "$RUST_FILE" ]; then
 
 	cd $PKG_PATH
 fi
+
+#修复 iStore (luci-app-store) 在 apk 架构下无法识别设备架构的问题
+if [ -d "luci-app-store" ]; then
+	echo " "
+	sed -i 's@libc.control 2>/dev/null | head -1`@libc.control 2>/dev/null | head -1`; [ -z "$ARCH" ] \&\& [ -s "/etc/apk/arch" ] \&\& ARCH=`cat /etc/apk/arch`@' ./luci-app-store/root/bin/is-opkg
+	echo "luci-app-store has been fixed!"
+fi
+
