@@ -107,6 +107,11 @@ if [ -f "./luci-app-store/Makefile" ]; then
 	sed -i 's/PKG_VERSION:=0.1.32-1/PKG_VERSION:=0.1.32.1/g' ./luci-app-store/Makefile
 fi
 
+# 修复 luci-app-store 在 apk 环境下的架构识别失败问题 (libc.control 不存在)
+if [ -f "./luci-app-store/root/bin/is-opkg" ]; then
+	sed -i '/libc.control/s/$/\n[ -z "$ARCH" ] \&\& ARCH=`\. \/etc\/openwrt_release 2\>\/dev\/null \&\& echo "\$DISTRIB_ARCH"`/' ./luci-app-store/root/bin/is-opkg
+fi
+
 # 克隆 SSR-Plus 及其特有依赖 (luci-app-ssr-plus, shadowsocksr-libev, shadowsocks-libev, dns2socks)
 echo "Cloning fw876/helloworld repository..."
 git clone --depth=1 --single-branch --branch master https://github.com/fw876/helloworld.git
