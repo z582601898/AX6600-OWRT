@@ -110,6 +110,7 @@ fi
 # 修复 luci-app-store 在 apk 环境下的架构识别失败问题 (libc.control 不存在)
 if [ -f "./luci-app-store/root/bin/is-opkg" ]; then
 	sed -i '/libc.control/s/$/\n[ -z "$ARCH" ] \&\& ARCH=`\. \/etc\/openwrt_release 2\>\/dev\/null \&\& echo "\$DISTRIB_ARCH"`/' ./luci-app-store/root/bin/is-opkg
+	sed -i '/cat \/etc\/opkg.conf/a \    if [ -n "$ARCH" ]; then\n        echo "arch all 1" >> ${IS_ROOT}/etc/opkg.conf\n        echo "arch noarch 1" >> ${IS_ROOT}/etc/opkg.conf\n        echo "arch $ARCH 10" >> ${IS_ROOT}/etc/opkg.conf\n    fi\n    echo "option force_depends 1" >> ${IS_ROOT}/etc/opkg.conf' ./luci-app-store/root/bin/is-opkg
 fi
 
 # 克隆 SSR-Plus 及其特有依赖 (luci-app-ssr-plus, shadowsocksr-libev, shadowsocks-libev, dns2socks)

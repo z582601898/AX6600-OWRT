@@ -97,6 +97,7 @@ fi
 if [ -d "luci-app-store" ]; then
 	echo " "
 	sed -i 's@libc.control 2>/dev/null | head -1`@libc.control 2>/dev/null | head -1`; [ -z "$ARCH" ] \&\& [ -s "/etc/apk/arch" ] \&\& ARCH=`cat /etc/apk/arch`@' ./luci-app-store/root/bin/is-opkg
+	sed -i '/cat \/etc\/opkg.conf/a \    if [ -n "$ARCH" ]; then\n        echo "arch all 1" >> ${IS_ROOT}/etc/opkg.conf\n        echo "arch noarch 1" >> ${IS_ROOT}/etc/opkg.conf\n        echo "arch $ARCH 10" >> ${IS_ROOT}/etc/opkg.conf\n    fi\n    echo "option force_depends 1" >> ${IS_ROOT}/etc/opkg.conf' ./luci-app-store/root/bin/is-opkg
 	echo "luci-app-store has been fixed!"
 fi
 
