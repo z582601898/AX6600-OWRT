@@ -213,6 +213,9 @@ UPDATE_VERSION() {
 #UPDATE_VERSION "软件包名" "测试版，true，可选，默认为否"
 UPDATE_VERSION "sing-box"
 
+# 添加文件传输插件
+UPDATE_PACKAGE "luci-app-filetransfer" "f8q8/luci-app-filetransfer" "master"
+
 #引入私有扩展脚本
 if [ -f "$GITHUB_WORKSPACE/Scripts/PRIVATE.sh" ]; then
 	source "$GITHUB_WORKSPACE/Scripts/PRIVATE.sh"
