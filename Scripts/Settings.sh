@@ -74,3 +74,31 @@ if [[ "${WRT_TARGET^^}" == *"QUALCOMMAX"* ]]; then
 		echo "qualcommax set up nowifi successfully!"
 	fi
 fi
+
+# 创建 opkg 兼容配置，实现 apk/ipk 双支持
+mkdir -p ./package/base-files/files/etc/uci-defaults
+cat << 'EOF' > ./package/base-files/files/etc/uci-defaults/99-opkg-compat
+#!/bin/sh
+
+ARCH=$(sed -n -e 's/^Architecture: *\([^ ]\+\) *$/\1/p' /usr/lib/opkg/info/libc.control /usr/lib/opkg/info/libc.control 2>/dev/null | head -1)
+[ -z "$ARCH" ] && [ -s "/etc/apk/arch" ] && ARCH=$(cat /etc/apk/arch)
+[ -z "$ARCH" ] && ARCH=$(. /etc/openwrt_release 2>/dev/null && echo "$DISTRIB_ARCH")
+
+if [ -f /etc/opkg.conf ]; then
+    sed -i '/arch all/d' /etc/opkg.conf
+    sed -i '/arch noarch/d' /etc/opkg.conf
+    [ -n "$ARCH" ] && sed -i "/arch $ARCH/d" /etc/opkg.conf
+    sed -i '/option force_depends/d' /etc/opkg.conf
+
+    echo "arch all 1" >> /etc/opkg.conf
+    echo "arch noarch 1" >> /etc/opkg.conf
+    if [ -n "$ARCH" ]; then
+        echo "arch $ARCH 10" >> /etc/opkg.conf
+    fi
+    echo "option force_depends 1" >> /etc/opkg.conf
+fi
+
+exit 0
+EOF
+chmod +x ./package/base-files/files/etc/uci-defaults/99-opkg-compat
+
